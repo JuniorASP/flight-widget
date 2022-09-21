@@ -4,7 +4,7 @@ let flights = [
     {
         time: '08:11',
         Destination: 'PUERTO PLATA',
-        flight: 'OX 203',
+        flight: 'JA 243',
         gate: ' A 01',
         remarks: 'ONE TIME'
 
@@ -14,7 +14,7 @@ let flights = [
         time: '10:11',
         Destination: 'RIO DE JANEIRO',
         flight: 'OX 203',
-        gate: ' A 01',
+        gate: ' C 24',
         remarks: 'CANCELLED'
 
     },
@@ -22,8 +22,8 @@ let flights = [
     {
         time: '12:41',
         Destination: 'MEDELLIN',
-        flight: 'OX 203',
-        gate: ' A 01',
+        flight: 'LX 903',
+        gate: ' B 11',
         remarks: 'ONE TIME'
 
     },
@@ -31,8 +31,8 @@ let flights = [
     {
         time: '13:22',
         Destination: 'SANTO DOMINGO',
-        flight: 'OX 203',
-        gate: ' A 01',
+        flight: 'OB 703',
+        gate: ' A 09',
         remarks: 'ONE TIME'
 
     },
@@ -40,14 +40,18 @@ let flights = [
     {
         time: '14:00',
         Destination: 'SAO PAOLO',
-        flight: 'OX 203',
-        gate: ' A 01',
+        flight: 'EX 603',
+        gate: ' B 02',
         remarks: 'DELAYED'
 
     }
 
 
 ]
+
+const Destinations = ['SAO PAOLO', 'SANTO DOMINGO', 'RIO DE JANEIRO', 'MEDELLIN', 'PUERTO PLATA']
+const remarks = ['ON TIME', 'CANCELLED', 'DELAYED']
+let hour = 15
 
 function populateTab(){
     for(const flight of flights){
@@ -58,11 +62,18 @@ function populateTab(){
             const tableCell = document.createElement('td')
             const word = Array.from(flight[flightDetail])
 
-            for(const letter of word){
+            for(const [index,letter] of word.entries()){
                 const letterElement = document.createElement('div')
+
+                setTimeout(() =>{
+
                 letterElement.classList.add('flip')
                 letterElement.textContent = letter
-                tableBody.appendChild(letterElement)
+                tableCell.appendChild(letterElement)
+
+                },100* index)
+
+                
             }
             tableBody.appendChild(tableCell)
         }
@@ -70,3 +81,54 @@ function populateTab(){
     
 }
 populateTab()
+
+function generateRandomLetter(){
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+return alphabet.charAt(Math.floor(Math.random()* alphabet.length))
+
+}
+
+ function generateRandomNumber(maxNumber){
+    const numbers = '0123456789'
+    if(maxNumber){
+        const newNumbers = numbers.slice(0, maxNumber)
+        return newNumbers.charAt(Math.floor(Math.random()* newNumbers.length))
+
+    }
+return numbers.charAt(Math.floor(Math.random()* numbers.length))
+
+ }
+
+ function generateTime(){
+
+    let displayHour = hour
+
+    if(hour < 24){
+        hour++
+    }
+    if(hour >= 24){
+        hour = 1
+        displayHour = hour
+    }
+    if(hour < 10){
+        displayHour = '0' + hour
+    }
+
+    return displayHour + ':'+ generateRandomNumber(5) + generateRandomNumber()
+ }
+
+
+
+function shuffleUp(){
+    flights.shift()
+    flights.push({
+        time: generateTime(),
+        Destination: Destinations[Math.floor(Math.random()* Destinations.length)],
+        flight: generateRandomLetter() + generateRandomLetter() + ''+ generateRandomNumber() +generateRandomNumber(),
+        gate: generateRandomLetter() + ''+ generateRandomNumber() + generateRandomNumber(),
+        remarks: remarks[Math.floor(Math.random()* remarks.length)]
+    })
+    tableBody.textContent = ''
+    populateTab()
+}
+setInterval(shuffleUp, 9000)
